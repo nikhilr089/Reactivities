@@ -17,9 +17,11 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 var app = builder.Build();
-
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3001", "https://localhost:3001"));
+app.MapControllers();
 
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider;
@@ -34,13 +36,4 @@ catch (Exception ex)
     var logger = context.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "Error");
 }
-// Configure the HTTP request pipeline.
-
-
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
-
-app.MapControllers();
-
 app.Run();
